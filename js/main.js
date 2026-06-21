@@ -182,7 +182,12 @@ const languageGrid = document.getElementById('languageGrid');
 
 // ─── RENDER LANGUAGE CARDS ──────────────────────────────────────────────────
 function renderLanguages() {
-    languageGrid.innerHTML = LANGUAGES.map(lang => `
+    // Urutkan bahasa berdasarkan nama (alfabet A-Z)
+    const sortedLanguages = [...LANGUAGES].sort((a, b) => {
+        return a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
+    });
+
+    languageGrid.innerHTML = sortedLanguages.map(lang => `
         <div class="language-card" data-lang="${lang.id}" role="button" tabindex="0" style="border-color: ${lang.color}44;">
             <span class="emoji">${lang.emoji}</span>
             <div class="name">${lang.name}</div>
