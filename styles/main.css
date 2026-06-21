@@ -220,11 +220,115 @@ header {
 /* ─── FOOTER ─── */
 footer {
     background: var(--river);
-    color: rgba(255, 255, 255, .5);
+    color: rgba(255, 255, 255, .6);
+    padding: 28px 24px 16px;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    border-top: 2px solid rgba(200, 146, 42, .15);
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-left {
+    flex: 1;
+    min-width: 280px;
+}
+
+.footer-right {
+    flex-shrink: 0;
+}
+
+.footer-brand {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, .7);
+    margin-bottom: 6px;
+}
+
+.footer-brand strong {
+    color: var(--gold-lt);
+    font-weight: 600;
+}
+
+.footer-credit {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, .45);
+    margin-bottom: 6px;
+}
+
+.footer-disclaimer {
+    font-size: 0.72rem;
+    color: rgba(255, 200, 100, .5);
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* ─── KONTAK HORIZONTAL (KE SAMPING) ─── */
+.footer-contact {
+    background: rgba(255, 255, 255, .04);
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(200, 146, 42, .15);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.contact-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gold-lt);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.contact-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.contact-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, .6);
+    text-decoration: none;
+    font-size: 0.78rem;
+    transition: color .2s, transform .15s;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.contact-link:hover {
+    color: var(--gold-lt);
+    background: rgba(200, 146, 42, .1);
+    transform: translateY(-2px);
+}
+
+.contact-icon {
+    font-size: 0.9rem;
+}
+
+/* ─── BAGIAN BAWAH FOOTER ─── */
+.footer-bottom {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .06);
     text-align: center;
-    padding: 24px;
-    font-size: 0.75rem;
-    line-height: 1.8;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, .3);
+    letter-spacing: .04em;
 }
 
 /* ─── RESPONSIVE ─── */
@@ -245,10 +349,57 @@ footer {
     .language-card .name {
         font-size: 0.95rem;
     }
+
+    .footer-inner {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .footer-left {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .footer-right {
+        width: 100%;
+    }
+
+    .footer-contact {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px 14px;
+        gap: 8px 16px;
+    }
+
+    .contact-label {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    .contact-links {
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .contact-link {
+        padding: 4px 6px;
+    }
+
+    .contact-link:hover {
+        transform: none;
+    }
 }
 
 @media (max-width: 440px) {
     .language-grid {
         grid-template-columns: 1fr;
+    }
+
+    .contact-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
