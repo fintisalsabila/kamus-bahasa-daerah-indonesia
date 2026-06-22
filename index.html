@@ -30,7 +30,7 @@
     <section class="hero">
         <div class="hero-inner">
             <h2>Jelajahi Kekayaan Bahasa Nusantara</h2>
-            <p>Pilih bahasa daerah untuk mulai belajar kosakata dan maknanya</p>
+            <p>Cari bahasa daerah atau daerah asal untuk mulai belajar kosakata dan maknanya</p>
         </div>
     </section>
 
@@ -38,6 +38,23 @@
     <section class="language-selection">
         <div class="container">
             <h3>Pilih Bahasa Daerah</h3>
+            
+            <!-- SEARCH BAR -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        id="searchRegion" 
+                        placeholder="Cari berdasarkan nama bahasa atau daerah asal..." 
+                        class="search-input"
+                        autocomplete="off"
+                    />
+                    <button id="clearSearch" class="clear-search" aria-label="Bersihkan pencarian">✕</button>
+                </div>
+                <div class="search-info" id="searchInfo"></div>
+            </div>
+
             <div class="language-grid" id="languageGrid">
                 <!-- Akan diisi oleh JavaScript -->
             </div>

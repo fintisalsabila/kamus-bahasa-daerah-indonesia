@@ -144,6 +144,14 @@ const LANGUAGES = [
         color: '#3A2A4A'
     },
     {
+        id: 'palu',
+        name: 'Bahasa Palu',
+        region: 'Sulawesi Tengah',
+        emoji: '🏙️',
+        count: 171,
+        color: '#2A5A3A'
+    },
+    {
         id: 'tionghoa_dki',
         name: 'Bahasa Tionghoa DKI',
         region: 'DKI Jakarta',
@@ -179,19 +187,35 @@ const LANGUAGES = [
 
 // ─── DOM REFS ─────────────────────────────────────────────────────────────────
 const languageGrid = document.getElementById('languageGrid');
+const searchInput = document.getElementById('searchRegion');
+const searchInfo = document.getElementById('searchInfo');
+const clearSearchBtn = document.getElementById('clearSearch');
+
+let currentFilteredLanguages = [];
 
 // ─── RENDER LANGUAGE CARDS ──────────────────────────────────────────────────
-function renderLanguages() {
-    // Urutkan bahasa berdasarkan nama (alfabet A-Z)
-    const sortedLanguages = [...LANGUAGES].sort((a, b) => {
-        return a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
-    });
+function renderLanguages(languagesToRender = null) {
+    // Jika tidak ada parameter, gunakan semua bahasa yang sudah diurutkan
+    const dataToRender = languagesToRender || getSortedLanguages();
+    currentFilteredLanguages = dataToRender;
 
-    languageGrid.innerHTML = sortedLanguages.map(lang => `
+    if (dataToRender.length === 0) {
+        languageGrid.innerHTML = `
+            <div class="empty-search">
+                <div class="empty-icon">🔍</div>
+                <h3>Tidak ditemukan</h3>
+                <p>Tidak ada bahasa daerah yang cocok dengan pencarian Anda.</p>
+                <p class="empty-hint">Coba cari dengan kata kunci lain atau periksa ejaan Anda.</p>
+            </div>
+        `;
+        return;
+    }
+
+    languageGrid.innerHTML = dataToRender.map(lang => `
         <div class="language-card" data-lang="${lang.id}" role="button" tabindex="0" style="border-color: ${lang.color}44;">
             <span class="emoji">${lang.emoji}</span>
-            <div class="name">${lang.name}</div>
-            <div class="region">${lang.region}</div>
+            <div class="name">${highlightMatch(lang.name)}</div>
+            <div class="region">${highlightMatch(lang.region)}</div>
             <span class="count">${lang.count} entri</span>
         </div>
     `).join('');
@@ -214,14 +238,77 @@ function renderLanguages() {
             }
         });
     });
+
+    // Update search info
+    updateSearchInfo(dataToRender.length);
+}
+
+// ─── GET SORTED LANGUAGES ──────────────────────────────────────────────────
+function getSortedLanguages() {
+    return [...LANGUAGES].sort((a, b) => {
+        return a.name.localeCompare(b.name, 'id', { sensitivity: 'base' });
+    });
+}
+
+// ─── HIGHLIGHT MATCH ──────────────────────────────────────────────────────
+function highlightMatch(text) {
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) return text;
+    
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark class="highlight">$1</mark>');
+}
+
+// ─── SEARCH FUNCTION ──────────────────────────────────────────────────────
+function searchLanguages(query) {
+    const trimmedQuery = query.trim().toLowerCase();
+    
+    if (!trimmedQuery) {
+        // Jika kosong, tampilkan semua bahasa
+        renderLanguages(getSortedLanguages());
+        return;
+    }
+
+    // Filter bahasa berdasarkan nama atau daerah
+    const filtered = getSortedLanguages().filter(lang => {
+        const nameMatch = lang.name.toLowerCase().includes(trimmedQuery);
+        const regionMatch = lang.region.toLowerCase().includes(trimmedQuery);
+        return nameMatch || regionMatch;
+    });
+
+    renderLanguages(filtered);
+}
+
+// ─── UPDATE SEARCH INFO ──────────────────────────────────────────────────
+function updateSearchInfo(count) {
+    const total = LANGUAGES.length;
+    const query = searchInput.value.trim();
+    
+    if (!query) {
+        searchInfo.textContent = `${total} bahasa daerah tersedia`;
+        searchInfo.style.display = 'block';
+        return;
+    }
+
+    if (count === 0) {
+        searchInfo.innerHTML = `Tidak ada hasil untuk "<strong>${query}</strong>"`;
+    } else {
+        searchInfo.innerHTML = `Menampilkan <strong>${count}</strong> dari ${total} bahasa daerah untuk "<strong>${query}</strong>"`;
+    }
+    searchInfo.style.display = 'block';
+}
+
+// ─── CLEAR SEARCH ────────────────────────────────────────────────────────
+function clearSearch() {
+    searchInput.value = '';
+    searchInfo.style.display = 'none';
+    renderLanguages(getSortedLanguages());
+    searchInput.focus();
 }
 
 // ─── NAVIGATE TO DICTIONARY ──────────────────────────────────────────────
 function navigateToDictionary(langData) {
-    // Simpan data bahasa yang dipilih ke localStorage untuk digunakan di halaman kamus
     localStorage.setItem('selectedLanguage', JSON.stringify(langData));
-
-    // Redirect ke halaman kamus
     window.location.href = `dictionary.html?lang=${langData.id}`;
 }
 
@@ -230,7 +317,32 @@ function isDictionaryPage() {
     return window.location.pathname.includes('dictionary.html');
 }
 
+// ─── EVENT LISTENERS ──────────────────────────────────────────────────────
+// Search input
+searchInput.addEventListener('input', (e) => {
+    const query = e.target.value;
+    searchLanguages(query);
+    
+    // Toggle clear button visibility
+    clearSearchBtn.style.display = query.length > 0 ? 'flex' : 'none';
+});
+
+// Clear search button
+clearSearchBtn.addEventListener('click', clearSearch);
+
+// Keyboard shortcut: Escape to clear
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        clearSearch();
+        searchInput.blur();
+    }
+});
+
 // ─── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    renderLanguages();
+    // Tampilkan semua bahasa
+    renderLanguages(getSortedLanguages());
+    
+    // Sembunyikan clear button awal
+    clearSearchBtn.style.display = 'none';
 });
